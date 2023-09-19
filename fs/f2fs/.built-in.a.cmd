@@ -1,1 +1,0 @@
-cmd_fs/f2fs/built-in.a := rm -f fs/f2fs/built-in.a; echo dir.o file.o inode.o namei.o hash.o super.o inline.o checkpoint.o gc.o data.o node.o segment.o recovery.o shrinker.o extent_cache.o sysfs.o debug.o xattr.o acl.o iostat.o | sed -E 's:([^ ]+):fs/f2fs/\1:g' | xargs ar cDPrST fs/f2fs/built-in.a
