@@ -1,0 +1,53 @@
+./sysfs.c:			f2fs_reset_iostat(sbi);
+Binary file ./acl.o matches
+Binary file ./node.o matches
+./f2fs.h:void f2fs_reset_fsync_node_info(struct f2fs_sb_info *sbi);
+Binary file ./extent_cache.o matches
+./checkpoint.c:	f2fs_reset_fsync_node_info(sbi);
+Binary file ./gc.o matches
+Binary file ./iostat.o matches
+Binary file ./shrinker.o matches
+./node.h:static inline void nat_reset_flag(struct nat_entry *ne)
+./node.h:				nid_t ino, unsigned int ofs, bool reset)
+./node.h:	if (reset)
+./iostat.h:extern void f2fs_reset_iostat(struct f2fs_sb_info *sbi);
+./iostat.c:void f2fs_reset_iostat(struct f2fs_sb_info *sbi)
+Binary file ./segment.o matches
+Binary file ./sysfs.o matches
+Binary file ./inode.o matches
+Binary file ./hash.o matches
+Binary file ./checkpoint.o matches
+./super.c:		goto reset_checkpoint;
+./super.c:			goto reset_checkpoint;
+./super.c:			goto reset_checkpoint;
+./super.c:reset_checkpoint:
+Binary file ./data.o matches
+Binary file ./xattr.o matches
+Binary file ./recovery.o matches
+Binary file ./debug.o matches
+./segment.c:	/* For sequential zones, reset the zone write pointer */
+./segment.c:			f2fs_err(sbi, "(%d) %s: Unaligned zone reset attempted (block %x + %x)",
+./segment.c:		trace_f2fs_issue_reset_zone(bdev, blkstart);
+./segment.c:static void reset_curseg(struct f2fs_sb_info *sbi, int type, int modified)
+./segment.c:	reset_curseg(sbi, type, 1);
+./segment.c:	reset_curseg(sbi, type, 1);
+./segment.c:		reset_curseg(sbi, i, 0);
+./segment.c:	reset_curseg(sbi, type, 0);
+./segment.c:	 * not at zone start, reset the write pointer.
+Binary file ./super.o matches
+./segment.c.backup:	/* For sequential zones, reset the zone write pointer */
+./segment.c.backup:			f2fs_err(sbi, "(%d) %s: Unaligned zone reset attempted (block %x + %x)",
+./segment.c.backup:		trace_f2fs_issue_reset_zone(bdev, blkstart);
+./segment.c.backup:static void reset_curseg(struct f2fs_sb_info *sbi, int type, int modified)
+./segment.c.backup:	reset_curseg(sbi, type, 1);
+./segment.c.backup:	reset_curseg(sbi, type, 1);
+./segment.c.backup:		reset_curseg(sbi, i, 0);
+./segment.c.backup:	reset_curseg(sbi, type, 0);
+./segment.c.backup:	 * not at zone start, reset the write pointer.
+Binary file ./dir.o matches
+Binary file ./inline.o matches
+Binary file ./file.o matches
+Binary file ./namei.o matches
+./node.c:		nat_reset_flag(new);
+./node.c:void f2fs_reset_fsync_node_info(struct f2fs_sb_info *sbi)
+./node.c:		nat_reset_flag(ne);
