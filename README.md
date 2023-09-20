@@ -4,7 +4,7 @@ AutoZG is a dynamic zone group management scheme within the F2FS file system des
 To achieve this, AutoZG predicts the lifespan of data being written by applications running on the host, organizes write streams accordingly, and stores each stream in individual zone groups. Furthermore, it analyzes the hotness of write streams and determines the size of zone groups proportionally to their hotness, thus optimizing overall performance while minimizing WAF. Additionally, it identifies chip information for the internal mapping of zones in ZNS SSDs to maximize chip parallelism and group zones accordingly.
 
 # Prerequisites
-AutoZG has been implemented in Linux kernel version 5.18-rc5. To use it, you should first install this specific Linux kernel version. After that, you can replace certain source code files with those from github to incorporate AutoZG into your kernel.
+AutoZG has been implemented in Linux kernel version 5.19-rc5. To use it, you should first install this specific Linux kernel version. After that, you can replace certain source code files with those from github to incorporate AutoZG into your kernel.
 
 # About Source Code
 To implement AutoZG in the Linux kernel source code, the modifications can be broadly categorized into three main parts.
@@ -26,7 +26,7 @@ In the source code, the existing logic performs garbage collection (GC) by recla
 In AutoZG, you've added defines and variables necessary for its operation within the F2FS source code. These variables have been declared within the superblock information (SBI) data structure. Here's a general description of what these additions might look like:
 
 ## Support Non-po2 ZNS SSD
-In Kernel version 5.18-rc5, there is an issue where non-power-of-two ZNS SSDs cannot be mounted. To address this, the following files have been modified to recognize non-power-of-two devices.
+In Kernel version 5.19-rc5, there is an issue where non-power-of-two ZNS SSDs cannot be mounted. To address this, the following files have been modified to recognize non-power-of-two devices.
 
 - block/blk-mq.c
 - block/blk-zoned.c
@@ -44,7 +44,7 @@ The Write Lifetime Hint (WLTH) values provided by the Linux kernel consist of a 
 ```
 git clone "AutoZG github address"
 
-# copy all files included to linux 5.18-rc5 source code
+# copy all files included to linux 5.19-rc5 source code
 
 # open fs/f2fs/f2fs.h to configure AutoZG
 # USE_STRIPE 1, USE_STREAM 1, MULTI_16 0, MULTI_48 0, ALL_FULL 0 ==> AutoZG
