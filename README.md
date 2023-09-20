@@ -1,5 +1,5 @@
 # What AutoZG Does
-AutoZG is a dynamic zone group management scheme within the F2FS file system designed to maximize performance while minimizing Write Amplification Factor(WAF) based on the characteristics of the workload.. 
+AutoZG is a dynamic zone group management scheme within the F2FS file system designed to maximize performance while minimizing Write Amplification Factor(WAF) based on the characteristics of the workload.
 
 To achieve this, AutoZG predicts the lifespan of data being written by applications running on the host, organizes write streams accordingly, and stores each stream in individual zone groups. Furthermore, it analyzes the hotness of write streams and determines the size of zone groups proportionally to their hotness, thus optimizing overall performance while minimizing WAF. Additionally, it identifies chip information for the internal mapping of zones in ZNS SSDs to maximize chip parallelism and group zones accordingly.
 
