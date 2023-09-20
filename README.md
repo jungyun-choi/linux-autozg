@@ -10,19 +10,23 @@ AutoZG has been implemented in Linux kernel version 5.18-rc5. To use it, you sho
 To implement AutoZG in the Linux kernel source code, the modifications can be broadly categorized into three main parts.
 
 ## Support Zone Grouping Scheme in F2FS file system
-F2FS File system은 segment 단위로 데이터를 모아 block device layer로 전달한다. ZNS SSD를 device로 mount하는 경우, 한 번에 하나의 zone을 open하고 해당 zone이 full이 되면 새로운 free zone을 찾아서 open하는 방식으로 돌아간다. 이로 인해 zone하나가 chip 하나에 매핑되는 small-zone ZNS SSD의 경우 mount시 성능이 크게 떨어지게 된다. 이에 AutoZG는 data를 저장하기 위한 next segment를 찾을 때에 zone group 크기 만큼의 zone을 찾아 open하고 이들을 interleaving하게 access하여 chip-parallism을 확보하였다. 또한, file system이 자체적으로 수행하는 garbage collection(GC) 시에도 한 번에 하나의 zone씩 reclaim하기 때문에 성능이 크게 떨어지는 문제가 있어, GC도 병렬적으로 처리할 수 있도록 수정하였다. 다음은 AutoZG를 구현하기 위해 수정한 핵심 source code에 대한 설명이다.
+The F2FS file system aggregates data at the segment level and forwards it to the block device layer. When mounting with a ZNS SSD as the device, it operates by opening one zone at a time, and when that zone becomes full, it searches for a new free zone to open. Consequently, when using a small-zone ZNS SSD where one zone is mapped to one chip, the performance significantly degrades upon mounting.
+
+To address this issue, AutoZG opens and interleaves access to a group of zones, equivalent to the zone group size, when searching for the next segment to store data. This ensures chip parallelism is maintained. Furthermore, the file system's internal garbage collection (GC) process traditionally reclaims one zone at a time, leading to performance bottlenecks. To mitigate this, modifications were made to enable parallel processing of GC.
+
+The following provides explanations of the source code changes made to implement AutoZG.
 
 ### fs/f2fs/segment.c
-해당 source code에는 F2FS가 segment 단위로 data를 처리하기 위한 모든 함수들이 포함되어 있다. 우리는 아래의 함수들을 수정하여 host로부터 전달되는 write request를 stream으로 구분하고, stream 별로 서로 다른 크기와 구성을 갖는 zone group을 할당하도록 하였다.
+The source code contains all the functions necessary for F2FS to handle data at the segment level. We have made modifications to the following functions to differentiate write requests from the host into streams and allocate zone groups with varying sizes and configurations for each stream.
 
 ### fs/f2fs/gc.c
-해당 source code에서는 free zone이 일정 수준 이하로 떨어지면 victim zone을 reclaim하는 GC를 수행한다. 우리는 small-zone SSD에서 GC시 zone을 병렬적으로 reclaim하기 위해 해당 code를 수정하였다. 
+In the source code, the existing logic performs garbage collection (GC) by reclaiming victim zones when the number of free zones falls below a certain threshold. You've made modifications to this code to enable parallel zone reclamation during GC on small-zone SSDs.
 
 ### fs/f2fs/f2fs.h
-AutoZG에서 필요한 define과 mount하는 동안 유지해야하는 변수들을 해당 code에 선언하였다. 변수는 모두 superblock information(SBI) 자료구조에 추가하였다.
+In AutoZG, you've added defines and variables necessary for its operation within the F2FS source code. These variables have been declared within the superblock information (SBI) data structure. Here's a general description of what these additions might look like:
 
 ## Support Non-po2 ZNS SSD
-Kernel 5.18-rc5 version에서는 zone size가 power of two 가 아닌 ZNS SSD를 mount할 수 없는 문제가 있다. 이를 해결하기 위해 다음의 file들을 수정하여 non-po2 device를 인식할 수 있도록 하였다. 
+In Kernel version 5.18-rc5, there is an issue where non-power-of-two ZNS SSDs cannot be mounted. To address this, the following files have been modified to recognize non-power-of-two devices.
 
 - block/blk-mq.c
 - block/blk-zoned.c
@@ -30,7 +34,8 @@ Kernel 5.18-rc5 version에서는 zone size가 power of two 가 아닌 ZNS SSD를
 - includes/linux/blkdev.h
 
 ## Support More WLTH Values (Optional)
-Linux kernel에서 제공하는 Write Lifetime Hint(WLTH) 값은 총 6개가 제공되며, 그 중  write hotness를 표현할 수 있는 값은 Short, Medium, Long, Extreme으로 4개이다. 논문의 실험결과는 해당 4개의 값으로만 WLTH를 사용하여 도출하였으나, 추가적으로 WLTH를 세부적으로 나누어 실험하기 위해 아래 files를 수정하여 enum 값을 추가하였다.
+
+The Write Lifetime Hint (WLTH) values provided by the Linux kernel consist of a total of 6 options. Among these, 4 values, namely Short, Medium, Long, and Extreme, are used to express write hotness levels. The experimental results in the paper were obtained using only these 4 WLTH values. However, in order to conduct further experiments with a more granular WLTH division, enum values have been added by modifying the following files
 
 - fs/fcntl.c
 - include/linux/fs.h
